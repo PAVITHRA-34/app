@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Quiz App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .quiz-container {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            width: 300px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .question {
+            margin-bottom: 15px;
+        }
+        .question p {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        .options {
+            list-style: none;
+            padding: 0;
+        }
+        .options li {
+            margin: 5px 0;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .result {
+            margin-top: 20px;
+            font-size: 18px;
+            text-align: center;
+        }
+        .result.correct {
+            color: green;
+        }
+        .result.incorrect {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+
+<div class="quiz-container">
+    <h2>Quiz App</h2>
+    <div id="quiz">
+        <!-- Questions will be injected by JavaScript -->
+    </div>
+    <button onclick="submitQuiz()">Submit Quiz</button>
+    <div id="result" class="result"></div>
+</div>
+
+<script>
+    // Questions and answers
+    const quizQuestions = [
+        {
+            question: "What is the capital of France?",
+            options: ["Berlin", "Madrid", "Paris", "Rome"],
+            answer: "Paris"
+        },
+        {
+            question: "Which planet is known as the Red Planet?",
+            options: ["Earth", "Mars", "Venus", "Jupiter"],
+            answer: "Mars"
+        },
+        {
+            question: "Who wrote 'Hamlet'?",
+            options: ["Shakespeare", "Dickens", "Hemingway", "Austen"],
+            answer: "Shakespeare"
+        },
+        {
+            question: "What is the largest ocean on Earth?",
+            options: ["Atlantic", "Indian", "Arctic", "Pacific"],
+            answer: "Pacific"
+        }
+    ];
+
+    // Function to generate the quiz
+    function generateQuiz() {
+        const quizContainer = document.getElementById('quiz');
+        quizQuestions.forEach((q, index) => {
+            const questionElement = document.createElement('div');
+            questionElement.classList.add('question');
+
+            const questionText = document.createElement('p');
+            questionText.textContent = (index + 1) + '. ' + q.question;
+            questionElement.appendChild(questionText);
+
+            const optionsList = document.createElement('ul');
+            optionsList.classList.add('options');
+
+            q.options.forEach(option => {
+                const optionItem = document.createElement('li');
+                const input = document.createElement('input');
+                input.type = 'radio';
+                input.name = 'question' + index;
+                input.value = option;
+                input.id = 'q' + index + '-' + option;
+
+                const label = document.createElement('label');
+                label.setAttribute('for', 'q' + index + '-' + option);
+                label.textContent = option;
+
+                optionItem.appendChild(input);
+                optionItem.appendChild(label);
+                optionsList.appendChild(optionItem);
+            });
+
+            questionElement.appendChild(optionsList);
+            quizContainer.appendChild(questionElement);
+        });
+    }
+
+    // Function to submit the quiz and calculate the score
+    function submitQuiz() {
+        let score = 0;
+
+        quizQuestions.forEach((q, index) => {
+            const selectedOption = document.querySelector(`input[name="question${index}"]:checked`);
+
+            if (selectedOption && selectedOption.value === q.answer) {
+                score++;
+            }
+        });
+
+        const resultElement = document.getElementById('result');
+        if (score === quizQuestions.length) {
+            resultElement.textContent = `Perfect! You scored ${score} out of ${quizQuestions.length}.`;
+            resultElement.classList.add('correct');
+            resultElement.classList.remove('incorrect');
+        } else {
+            resultElement.textContent = `You scored ${score} out of ${quizQuestions.length}.`;
+            resultElement.classList.add('incorrect');
+            resultElement.classList.remove('correct');
+        }
+    }
+
+    // Initialize the quiz on page load
+    generateQuiz();
+</script>
+
+</body>
+</html>
